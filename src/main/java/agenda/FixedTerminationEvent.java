@@ -3,6 +3,7 @@ package agenda;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.time.temporal.ChronoUnit;
 
 /**
@@ -83,5 +84,10 @@ public class FixedTerminationEvent extends RepetitiveEvent {
         }
         return numberOfOccurrences;
     }
-        
+
+    @Override
+    public boolean isInDay(LocalDate aDay) {
+        if (aDay.isAfter(getTerminationDate())) return false;
+        return super.isInDay(aDay);
+    }
 }
