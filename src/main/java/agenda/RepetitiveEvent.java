@@ -1,5 +1,6 @@
 package agenda;
 
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 import java.time.*;
 import java.time.temporal.ChronoUnit;
@@ -8,6 +9,9 @@ import java.time.temporal.ChronoUnit;
  * Description : A repetitive Event
  */
 public class RepetitiveEvent extends Event {
+    private ChronoUnit frequency;
+    private Set<LocalDate> exceptions = new HashSet<>();
+
     /**
      * Constructs a repetitive event
      *
@@ -23,8 +27,7 @@ public class RepetitiveEvent extends Event {
      */
     public RepetitiveEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency) {
         super(title, start, duration);
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        this.frequency = frequency;
     }
 
     /**
@@ -33,8 +36,7 @@ public class RepetitiveEvent extends Event {
      * @param date the event will not occur at this date
      */
     public void addException(LocalDate date) {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        exceptions.add(date);
     }
 
     /**
@@ -42,8 +44,22 @@ public class RepetitiveEvent extends Event {
      * @return the type of repetition
      */
     public ChronoUnit getFrequency() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");    
+        return frequency;
     }
 
+    @Override
+    public boolean isInDay(LocalDate aDay) {
+        if (super.isInDay(aDay)) return true;
+        if (aDay.isBefore((ChronoLocalDate) this.getStart().toLocalDate())) return false;
+        if (exceptions.contains(aDay)) return false;
+        switch (frequency){
+            case DAYS:
+                return true;
+            case WEEKS:
+                if (aDay.getDayOfWeek().equals(getStart().getDayOfWeek())) return true;
+            case MONTHS:
+                if (aDay.getDayOfMonth() == getStart().getDayOfMonth()) return true;
+        }
+        return false;
+    }
 }
