@@ -10,8 +10,9 @@ import java.time.temporal.ChronoUnit;
  * a given number of occurrences
  */
 public class FixedTerminationEvent extends RepetitiveEvent {
+    private LocalDate terminationInclusive;
+    private Long numberOfOccurrences;
 
-    
     /**
      * Constructs a fixed terminationInclusive event ending at a given date
      *
@@ -28,9 +29,7 @@ public class FixedTerminationEvent extends RepetitiveEvent {
      */
     public FixedTerminationEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency, LocalDate terminationInclusive) {
          super(title, start, duration, frequency);
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
-
+            this.terminationInclusive = terminationInclusive;
     }
 
     /**
@@ -49,8 +48,7 @@ public class FixedTerminationEvent extends RepetitiveEvent {
      */
     public FixedTerminationEvent(String title, LocalDateTime start, Duration duration, ChronoUnit frequency, long numberOfOccurrences) {
         super(title, start, duration, frequency);
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+            this.numberOfOccurrences = numberOfOccurrences;
     }
 
     /**
@@ -58,13 +56,32 @@ public class FixedTerminationEvent extends RepetitiveEvent {
      * @return the termination date of this repetitive event
      */
     public LocalDate getTerminationDate() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");   
+        if(terminationInclusive == null) {
+            switch (getFrequency()){
+                case DAYS : 
+                    this.terminationInclusive = getStart().plusDays(this.numberOfOccurrences).toLocalDate();
+                case WEEKS:
+                    this.terminationInclusive = getStart().plusWeeks(this.numberOfOccurrences).toLocalDate();
+                case MONTHS:
+                    this.terminationInclusive = getStart().plusMonths(this.numberOfOccurrences).toLocalDate();
+            }
+        }
+        return terminationInclusive;
     }
 
     public long getNumberOfOccurrences() {
-        // TODO : implémenter cette méthode
-        throw new UnsupportedOperationException("Pas encore implémenté");
+        long nbJours = (getTerminationDate().getDayOfYear() + getTerminationDate().getYear()*365) - (getStart().getDayOfYear() + getStart().getYear()*365);
+        if(numberOfOccurrences == null) {
+            switch (getFrequency()){
+                case DAYS :
+                    numberOfOccurrences = nbJours;
+                case WEEKS:
+                    numberOfOccurrences = nbJours/7;
+                case MONTHS:
+                    numberOfOccurrences = nbJours/30;
+            }
+        }
+        return numberOfOccurrences;
     }
         
 }
