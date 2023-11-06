@@ -53,6 +53,10 @@ public class Event {
         }
         return false;
     }
+
+    public String toString(){
+        return "Nom de l'event : " + this.myTitle ;
+    }
    
     /**
      * @return the myTitle
