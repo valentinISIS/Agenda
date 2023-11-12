@@ -38,6 +38,14 @@ public class AgendaTest {
     // November 1st, 2020, 22:30, 120 minutes
     RepetitiveEvent neverEnding = new RepetitiveEvent("Never Ending", nov_1__2020_22_30, min_120, ChronoUnit.DAYS);
 
+    // Events to test the false issue in the test testIsFreeFor
+    Event simpleStartIn = new Event("Simple event", nov_1__2020_22_30.plusMinutes(10), min_120);
+    Event simpleFinishIn = new Event("Simple event", nov_1__2020_22_30.minusMinutes(10), min_120);
+    Event simpleIncludeIt = new Event("Simple event", nov_1__2020_22_30.minusMinutes(10), min_120.plusMinutes(20));
+
+    // Event to test the true issue in the test testIsFreeFor
+    Event otherSimple = new Event("Simple event", nov_1__2020_22_30.plusMinutes(130), min_120);
+
     @BeforeEach
     public void setUp() {
         agenda = new Agenda();
@@ -53,5 +61,16 @@ public class AgendaTest {
         assertTrue(agenda.eventsInDay(nov_1_2020).contains(neverEnding));
     }
 
+    @Test
+    public void testFindByTitle() {
+        assertEquals(1, agenda.findByTitle("Simple event").size(), "il y a un seul événement: Simple event");
+    }
 
+    @Test
+    public void testIsFreeFor() {
+        assertFalse(agenda.isFreeFor(simpleStartIn), "un événement ne peux pas commencer en meme temps qu'un autre");
+        assertFalse(agenda.isFreeFor(simpleFinishIn), "un événement ne peux pas terminer en meme temps qu'un autre");
+        assertFalse(agenda.isFreeFor(simpleIncludeIt), "un événement ne peux pas en contenir un autre");
+        assertTrue(agenda.isFreeFor(otherSimple), "ce creneau est sense etre libre");
+    }
 }
