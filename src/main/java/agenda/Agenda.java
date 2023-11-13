@@ -61,7 +61,8 @@ public class Agenda {
             LocalDateTime eventInAgendaFin = eventInAgendaStart.plusMinutes(e.getDuration().toMinutes());
             if (eventInAgendaStart.isAfter(eventStart) && eventInAgendaStart.isBefore(eventFin)
                 || eventInAgendaFin.isAfter(eventStart) && eventInAgendaFin.isBefore(eventFin)
-                || eventInAgendaStart.isBefore(eventStart) && eventInAgendaFin.isAfter(eventFin)) return false;
+                || eventInAgendaStart.isBefore(eventStart) && eventInAgendaFin.isAfter(eventFin)
+                || eventInAgendaStart.isAfter(eventStart) && eventInAgendaFin.isBefore(eventFin)) return false;
         }
         return true;
     }
